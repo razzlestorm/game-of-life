@@ -2,7 +2,10 @@ from PIL import Image
 
 def resize(input_path):
     img = Image.open(input_path)
-    img = img.resize((round(img.size[0], -1), round(img.size[1], -1)))
+    if img.size[0] >= 1280:
+        img = img.resize((1280, 800)) 
+    else:
+        img = img.resize((round(img.size[0], -1), round(img.size[1], -1)))
     img.save(input_path, img.format)
 
 def binarize(input_path):

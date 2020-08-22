@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, abort, sen
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 from .image_converter import binarize, resize
+import glob
+import time
 
 
 
@@ -26,7 +28,7 @@ def create_app():
     """Create and configure an instance of the Flask application"""
     app = Flask(__name__)
     cors = CORS(app)
-    app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
     app.config['UPLOAD_PATH'] = 'uploads'
 
@@ -56,12 +58,24 @@ def create_app():
                     file_ext != validate_image(uploaded_file.stream):
                 abort(400)
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+            time.sleep(1)
         return redirect(url_for('index'))
 
     @app.route('/uploads/<filename>')
     def upload(filename):
         return send_from_directory(app.config['UPLOAD_PATH'], filename)
+    
+    @app.route('/delete_uploads')
+    def delete():
+        for fil in glob.glob('./uploads/*'):
+            os.remove(fil)
+        return "Images deleted!"
+    
+    
     return app
+
+
+
 
 APP = create_app()
 
