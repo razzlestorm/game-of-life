@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 from .image_converter import binarize, resize
 import glob
 import time
+from flask_bootstrap import Bootstrap 
 
 
 
@@ -27,8 +28,8 @@ def allowed_image(filename, extensions):
 def create_app():
     """Create and configure an instance of the Flask application"""
     app = Flask(__name__)
+    bootstrap = Bootstrap(app)
     cors = CORS(app)
-
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
     app.config['UPLOAD_PATH'] = 'uploads'
 

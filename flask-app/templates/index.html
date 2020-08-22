@@ -1,7 +1,9 @@
+
 <!doctype html>
 <html>
   <head>
-    <title>File Upload</title>
+    <title>Game of Life!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
   <body>
     <h1>File Upload</h1>
@@ -10,8 +12,26 @@
       <p><input type="submit" value="Submit"></p>
     </form>
     <hr>
-    {% for file in files %}
-      <img src="{{ url_for('upload', filename=file) }}">
-    {% endfor %}
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <!-- This dropdown is populated with all uploaded files -->
+    <select id="filedrop" method="GET" action="/">
+      {% for file in files %}
+      <option value= {{url_for('upload', filename=file) }}>{{file}}</option>
+      <img src= style="width: 64px">
+      {% endfor %}
+    </select>
+    <div id="image">
+      <!-- Need to set the initial src of this image to be the last dropdown option -->
+      <img id="selectedImage">
+    </div>
+    <!-- This changes the image src based on the value of the dropdown -->
+    <script>    
+      $( "select" ) .change(function () {    
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
+      });  
+    </script>
+    <!-- {% for file in files %}
+      <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
+    {% endfor %} -->
   </body>
 </html>
