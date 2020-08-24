@@ -11,18 +11,18 @@
       <p><input type="file" name="file"></p>
       <p><input type="submit" value="Submit"></p>
     </form>
-    <hr>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <!-- This dropdown is populated with all uploaded files -->
-    <select id="filedrop" method="GET" action="/">
-      {% for file in files %}
-      <option value= {{url_for('upload', filename=file) }}>{{file}}</option>
-      <img src= style="width: 64px">
-      {% endfor %}
-    </select>
+    <form method="POST" action="{{ url_for('game') }}">
+      <select id="filedrop" name="filedrop" method="GET" action="/">
+        {% for file in files %}
+        <option value= {{url_for('upload', filename=file) }}>{{file}}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Play with this board!</button>
+    </form>
     <div id="image">
-      <!-- Need to set the initial src of this image to be the last dropdown option -->
-      <img id="selectedImage">
+      <img id="selectedImage" style="width: 128px">
     </div>
     <!-- This changes the image src based on the value of the dropdown -->
     <script>    
@@ -33,8 +33,7 @@
       document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
       });  
     </script>
-    <!-- {% for file in files %}
-      <img src="{{ url_for('upload', filename=file) }}" style="width: 64px">
-    {% endfor %} -->
+    <hr>
+        <img src={{ board }}>
   </body>
 </html>

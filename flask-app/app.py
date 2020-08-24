@@ -41,14 +41,20 @@ def create_app():
             return None
         return '.' + (format if format != 'jpeg' else 'jpg')
 
+    # Main route
     @app.route('/')
     def index():
         files = os.listdir(app.config['UPLOAD_PATH'])
         for f in files:
             resize(f'uploads/{f}')
             binarize(f'uploads/{f}')
-        return render_template('index.html', files=files)
+        if not request.args.get('gameboard'):
+            gameboard = '/uploads/bird.jpg'
+        else:
+            gameboard = request.args.get('gameboard')
+        return render_template('index.html', files=files, board=gameboard)
 
+    # This route handles image uploads and upload checking (w/ Submit button)
     @app.route('/', methods=['POST'])
     def upload_files():
         uploaded_file = request.files['file']
@@ -57,19 +63,29 @@ def create_app():
             file_ext = os.path.splitext(filename)[1]
             if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
                     file_ext != validate_image(uploaded_file.stream):
+                print('Please try a different image!')
                 abort(400)
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
             time.sleep(1)
         return redirect(url_for('index'))
 
+    # This route sends the filename found in the directory to index
     @app.route('/uploads/<filename>')
     def upload(filename):
         return send_from_directory(app.config['UPLOAD_PATH'], filename)
+
+    # This route gets the request for the user's game board from the "Play..." button
+    @app.route("/game" , methods=['GET', 'POST'])
+    def game():
+        select = request.form.get('filedrop')
+        return redirect(url_for('index', gameboard=select))
+
     
     @app.route('/delete_uploads')
     def delete():
         for fil in glob.glob('./uploads/*'):
-            os.remove(fil)
+            if fil != './uploads\\bird.jpg':
+                os.remove(fil)
         return "Images deleted!"
     
     
