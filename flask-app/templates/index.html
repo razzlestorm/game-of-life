@@ -26,6 +26,9 @@
     </div>
     <!-- This changes the image src based on the value of the dropdown -->
     <script>    
+      $( document ).ready(function() {
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
+      });
       $( "select" ) .change(function () {    
       document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
       });  
