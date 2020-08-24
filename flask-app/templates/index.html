@@ -2,10 +2,12 @@
 <!doctype html>
 <html>
   <head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js"></script>
     <title>Game of Life!</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
-  <body>
+  <body onload="brython(1)">
     <h1>File Upload</h1>
     <form method="POST" action="" enctype="multipart/form-data">
       <p><input type="file" name="file"></p>
@@ -34,6 +36,22 @@
       });  
     </script>
     <hr>
-        <img src={{ board }}>
+    <div id ='gboard_div'>
+      <img id='gboard' src={{ board }}>
+      <button id="board_button">ClickME</button>
+
+    </div>
+<script type="text/python">
+from browser import bind, document, html
+
+@bind("#board_button", "click")
+def change(event):
+  display = document['gboard'].style.display
+  document['gboard'].style.display = "inline" if display == "none" else "none"
+
+for key, value in document['gboard'].attrs.items():
+    document <= key + ": " + value + html.BR()
+
+</script>
   </body>
 </html>
