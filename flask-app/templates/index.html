@@ -38,8 +38,7 @@
     <hr>
     <div id ='gboard_div'>
       <img id='gboard' src={{ board }} style="display:none">
-      <!-- <button id="board_button">ClickME</button> -->
-
+      <button id="next_button">Next</button>
     </div>
 
     <!-- <script>
@@ -61,29 +60,12 @@
 from browser import bind, document, html
 
 
-
-'''@bind("#board_button", "click")
-def change(event):
-  display = document['gboard'].style.display
-  document['gboard'].style.display = "inline" if display == "none" else "none"'''
-
-'''for key, value in document['gboard'].attrs.items():
-    document <= key + ": " + value + html.BR()'''
-
-'''class Example:
-    def __init__(self, number, color):
-        self.number = number
-        self.color = color
-
-dog = Example(4, 'green')
-document <= dog.number'''
-
 img = document['gboard']
 document <= "width: " + str(img.naturalWidth) + " height: " + str(img.naturalHeight)
 img.naturalWidth = int(img.naturalWidth)
 img.naturalHeight = int(img.naturalHeight)
 canvas = html.CANVAS(width=img.naturalWidth, height=img.naturalHeight)
-canvas.style = {"margin-left": "auto", "margin-right": "auto"}
+canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"}
 ctx = canvas.getContext('2d')
 ctx.drawImage(img, 0, 0)
 document <= canvas
@@ -118,9 +100,8 @@ def rule_checker(data, iterator, *args):
             data[iterator+2] = 255
     return data
 
-
-n = 0
-while n < 3:
+@bind("#next_button", "click")
+def game(event):
     ii = 0
     while ii < len(boardImage.data):
         # NW Corner
@@ -208,10 +189,8 @@ while n < 3:
                 SE = boardImage.data[ii+(canvas.width*4)+3]
             boardImage.data = rule_checker(boardImage.data, ii, NW, N, NE, W, E, SW, S, SE)
         ii += 4
-
     ctx.putImageData(boardImage, 0, 0)
     document <= canvas
-    n += 1
 
 
 #step forward, then draw with html canvas, https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D (maybe getImageData)
