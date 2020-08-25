@@ -37,21 +37,63 @@
     </script>
     <hr>
     <div id ='gboard_div'>
-      <img id='gboard' src={{ board }}>
-      <button id="board_button">ClickME</button>
+      <img id='gboard' src={{ board }} style="display:none">
+      <!-- <button id="board_button">ClickME</button> -->
 
     </div>
+
+    <!-- <script>
+      var canvas = document.getElementById('gamecanvas'),
+      context = canvas.getContext('2d');
+
+      make_base();
+
+      function make_base()
+      {
+        base_image = new Image();
+        base_image.src = document.getElementById("gboard").src;
+        base_image.onload = function(){
+    context.drawImage(base_image, 0, 0);
+  }
+      }
+    </script> -->
 <script type="text/python">
 from browser import bind, document, html
 
-@bind("#board_button", "click")
+'''@bind("#board_button", "click")
 def change(event):
   display = document['gboard'].style.display
-  document['gboard'].style.display = "inline" if display == "none" else "none"
+  document['gboard'].style.display = "inline" if display == "none" else "none"'''
 
-for key, value in document['gboard'].attrs.items():
-    document <= key + ": " + value + html.BR()
+'''for key, value in document['gboard'].attrs.items():
+    document <= key + ": " + value + html.BR()'''
 
+'''class Example:
+    def __init__(self, number, color):
+        self.number = number
+        self.color = color
+
+dog = Example(4, 'green')
+document <= dog.number'''
+
+img = document['gboard']
+document <= img.naturalWidth, img.naturalHeight
+img.naturalWidth = int(img.naturalWidth)
+img.naturalHeight = int(img.naturalHeight)
+canvas = html.CANVAS(width=img.naturalWidth, height=img.naturalHeight)
+canvas.style = {"margin-left": "auto", "margin-right": "auto"}
+ctx = canvas.getContext('2d')
+ctx.drawImage(img, 0, 0)
+document <= canvas
+
+boardImageData = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data
+document <= len(boardImageData)
+
+
+
+#step forward, then draw with html canvas, https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D (maybe getImageData)
+# https://stackoverflow.com/questions/51569444/check-cell-color-in-table-in-canvas
+# https://stackoverflow.com/questions/12992681/html-5-canvas-get-color-of-an-image-and-then-change-the-pixels-with-that-color
 </script>
   </body>
 </html>

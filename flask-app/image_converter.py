@@ -3,8 +3,8 @@ import imghdr
 
 def resize(input_path):
     img = Image.open(input_path)
-    if img.size[0] >= 1280:
-        img = img.resize((1280, 800)) 
+    if img.size[0] >= 500:
+        img = img.resize((500, 500)) 
     else:
         img = img.resize((round(img.size[0], -1), round(img.size[1], -1)))
     img.save(input_path, img.format)
