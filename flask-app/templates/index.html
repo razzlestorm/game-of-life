@@ -77,27 +77,27 @@ document <= " board length: "  + str(len(boardImage.data)) + " "
 def rule_checker(data, iterator, *args):
     count = 0
     for arg in args:
-        if arg > 127:
+        if arg < 127:
             count += 1
     # check if cell is alive
-    if data[iterator] > 127:
+    if data[iterator] < 127:
         if count in [2, 3]:
-            # cell stays alive (255, 255, 255) = white
-            data[iterator] = 255
-            data[iterator+1] = 255
-            data[iterator+2] = 255
-        else:
-            # cell dies
+            # cell stays alive (0, 0, 0) = black
             data[iterator] = 0
             data[iterator+1] = 0
             data[iterator+2] = 0
+        else:
+            # cell dies
+            data[iterator] = 255
+            data[iterator+1] = 255
+            data[iterator+2] = 255
 
     # check if cell is dead
     else:
         if count == 3:
-            data[iterator] = 255
-            data[iterator+1] = 255
-            data[iterator+2] = 255
+            data[iterator] = 0
+            data[iterator+1] = 0
+            data[iterator+2] = 0
     return data
 
 @bind("#next_button", "click")
