@@ -40,8 +40,27 @@
       <img id='gboard' src={{ board }} style="display:none">
       <button id="next_button">Next</button>
     </div>
+    <!-- Translation to JS for better runtime maybe?
+       <div>
+      <canvas id='canvas'></canvas>
+      <script>
+        const canvas = document.getElementById('canvas');
+        img = document.getElementById('gboard');
+        canvas.width = parseInt(img.naturalWidth);
+        canvas.height = parseInt(img.naturalHeight);
+        canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"};
+        context = canvas.getContext('2d');
+        context.drawImage(img, 0, 0);
 
-    <!-- <script>
+        boardImage = context.getImageData(0, 0, img.naturalWidth, img.naturalHeight)
+        function rule_checker(data, iterator, ...args){
+            
+        };
+      </script>
+    </div> -->
+    <!-- 
+      # JS for creating new canvas
+      <script>
       var canvas = document.getElementById('gamecanvas'),
       context = canvas.getContext('2d');
 
@@ -56,6 +75,8 @@
   }
       }
     </script> -->
+
+
 <script type="text/python">
 from browser import bind, document, html
 
@@ -197,5 +218,7 @@ def game(event):
 # https://stackoverflow.com/questions/51569444/check-cell-color-in-table-in-canvas
 # https://stackoverflow.com/questions/12992681/html-5-canvas-get-color-of-an-image-and-then-change-the-pixels-with-that-color
 </script>
+
+
   </body>
 </html>
