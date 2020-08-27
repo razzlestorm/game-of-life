@@ -26,21 +26,21 @@
     <div id="image">
       <img id="selectedImage" style="width: 128px">
     </div>
+    <hr>
+    <div id ='gboard_div'>
+      <img id='gboard' src={{ gameimg[9:] }} style="display:none">
+      <button id="next_button">Next</button>
+    </div>
     <!-- This changes the image src based on the value of the dropdown -->
     <script>    
       $( document ).ready(function() {
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value.substring(9);
       });
       $( "select" ) .change(function () {
       console.log(document.getElementById("filedrop").value);    
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value.substring(9);  
       });  
     </script>
-    <hr>
-    <div id ='gboard_div'>
-      <img id='gboard' src={{ gameimg }} style="display:none">
-      <button id="next_button">Next</button>
-    </div>
 
 <script type="text/python">
 from browser import bind, document, html
