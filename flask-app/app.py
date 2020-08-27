@@ -18,11 +18,12 @@ def create_app():
     bootstrap = Bootstrap(app)
     cors = CORS(app)
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-    app.config['UPLOAD_PATH'] = 'uploads'
+    app.config['UPLOAD_PATH'] = '/uploads'
 
     # Main route
     @app.route('/')
     def index():
+        print(os.listdir())
         files = os.listdir(app.config['UPLOAD_PATH'])
         for f in files:
             resize(f'uploads/{f}')
