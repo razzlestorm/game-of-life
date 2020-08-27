@@ -1,6 +1,5 @@
 brython==3.8.9
 click==7.1.2
-decouple==0.0.7
 dominate==2.5.1
 Flask==1.1.2
 Flask-Bootstrap==3.3.7.1
