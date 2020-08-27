@@ -31,7 +31,8 @@
       $( document ).ready(function() {
       document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
       });
-      $( "select" ) .change(function () {    
+      $( "select" ) .change(function () {
+      console.log(document.getElementById("filedrop").value);    
       document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
       });  
     </script>

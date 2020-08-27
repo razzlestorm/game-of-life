@@ -18,21 +18,21 @@ def create_app():
     bootstrap = Bootstrap(app)
     cors = CORS(app)
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-    app.config['UPLOAD_PATH'] = '/uploads'
+    app.config['UPLOAD_PATH'] = './flask-app/uploads/'
 
     # Main route
     @app.route('/')
     def index():
-        print(os.listdir())
         files = os.listdir(app.config['UPLOAD_PATH'])
         for f in files:
-            resize(f'uploads/{f}')
-            binarize(f'uploads/{f}')
+            resize(f'./flask-app/uploads/{f}')
+            binarize(f'./flask-app/uploads/{f}')
         if not request.args.get('gameboard'):
-            gameimg = 'uploads/bird.jpg'
+            gameimg = './flask-app/uploads/bird.jpg'
         else:
-            gameimg = request.args.get('gameboard')[1:]
+            gameimg = f"{request.args.get('gameboard')}"[1:]
         gamegrid = np.array(Image.open(gameimg)).tolist()
+        print(gameimg)
         return render_template('index.html', files=files, gameimg=gameimg, gamegrid=gamegrid)
 
     # This route handles image uploads and upload checking (w/ Submit button)
@@ -50,8 +50,8 @@ def create_app():
             time.sleep(1)
         return redirect(url_for('index'))
 
-    # This route sends the filename found in the directory to index
-    @app.route('/uploads/<filename>')
+    # This route sends the filename found in the directory to index.html
+    @app.route('/flask-app/uploads/<filename>')
     def upload(filename):
         return send_from_directory(app.config['UPLOAD_PATH'], filename)
 
@@ -64,8 +64,8 @@ def create_app():
     
     @app.route('/delete_uploads')
     def delete():
-        for fil in glob.glob('./uploads/*'):
-            if fil != './uploads\\bird.jpg':
+        for fil in glob.glob('./flask-app/uploads/*'):
+            if fil != './flask-app/uploads\\bird.jpg':
                 os.remove(fil)
         return "Images deleted!"
     
