@@ -37,60 +37,84 @@
     </script>
     <hr>
     <div id ='gboard_div'>
-      <img id='gboard' src={{ board }} style="display:none">
+      <img id='gboard' src={{ gameimg }} style="display:none">
       <button id="next_button">Next</button>
     </div>
-    <!-- Translation to JS for better runtime maybe?
-       <div>
-      <canvas id='canvas'></canvas>
-      <script>
-        const canvas = document.getElementById('canvas');
-        img = document.getElementById('gboard');
-        canvas.width = parseInt(img.naturalWidth);
-        canvas.height = parseInt(img.naturalHeight);
-        canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"};
-        context = canvas.getContext('2d');
-        context.drawImage(img, 0, 0);
-
-        boardImage = context.getImageData(0, 0, img.naturalWidth, img.naturalHeight)
-        function rule_checker(data, iterator, ...args){
-            
-        };
-      </script>
-    </div> -->
-    <!-- 
-      # JS for creating new canvas
-      <script>
-      var canvas = document.getElementById('gamecanvas'),
-      context = canvas.getContext('2d');
-
-      make_base();
-
-      function make_base()
-      {
-        base_image = new Image();
-        base_image.src = document.getElementById("gboard").src;
-        base_image.onload = function(){
-    context.drawImage(base_image, 0, 0);
-  }
-      }
-    </script> -->
-
 
 <script type="text/python">
 from browser import bind, document, html
+from browser.timer import request_animation_frame as raf
+from browser.timer import cancel_animation_frame as caf
 
 
 img = document['gboard']
 document <= "width: " + str(img.naturalWidth) + " height: " + str(img.naturalHeight)
-img.naturalWidth = int(img.naturalWidth)
-img.naturalHeight = int(img.naturalHeight)
+img.attrs['naturalWidth'] = int(img.naturalWidth)
+img.attrs['naturalHeight'] = int(img.naturalHeight)
 canvas = html.CANVAS(width=img.naturalWidth, height=img.naturalHeight)
 canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"}
 ctx = canvas.getContext('2d')
-ctx.drawImage(img, 0, 0)
+ctx.imageSmoothingEnabled = False
+world = {{ gamegrid }}
+
+
+def draw(arr):
+    for y in range(len(arr)):
+        for x in range(len(arr[y])):
+            if arr[y][x] < 127:
+                ctx.fillStyle = 'rgb(0,0,0)'
+            else:
+                ctx.fillStyle = 'rgb(255,255,255)'
+            ctx.fillRect(x, y, 1, 1)
+    return ctx
+
+def play_step(world):
+    stepped_world = world.copy()
+    for y in range(len(world)):
+        for x in range(len(world[y])):
+        
+            cell = world[y][x]
+            neighbor_count = 0
+            # Getting neighbors
+            for yy in range(-1, 2):
+                for xx in range(-1, 2):
+                    if yy == 0 and xx == 0:
+                        continue
+                
+                    y_cell = y+yy
+                    x_cell = x+xx
+                
+                    if (y_cell >= 0 and x_cell >= 0) and (y_cell < len(world) and x_cell < len(world[y])):
+                        neighbor = world[y + yy][x+ xx]
+                        if neighbor < 127:
+                            neighbor_count += 1
+
+            # cell is alive 
+            if cell < 127 and neighbor_count < 2:
+                stepped_world[y][x] = 255
+            elif cell < 127 and neighbor_count > 3:
+                stepped_world[y][x] = 255
+            # If cell is dead
+            elif cell > 127 and neighbor_count == 3:
+                stepped_world[y][x] = 0
+    return stepped_world
+
+
+sworld = play_step(world)
+draw(sworld)
+
 document <= canvas
 
+
+'''def update(i):
+    global world
+    stepped_world = play_step(world)
+    draw(stepped_world)
+
+
+document <= canvas'''
+
+'''
 boardImage = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight)
 document <= " board length: "  + str(len(boardImage.data)) + " "
 
@@ -211,7 +235,7 @@ def game(event):
             boardImage.data = rule_checker(boardImage.data, ii, NW, N, NE, W, E, SW, S, SE)
         ii += 4
     ctx.putImageData(boardImage, 0, 0)
-    document <= canvas
+    document <= canvas'''
 
 
 #step forward, then draw with html canvas, https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D (maybe getImageData)

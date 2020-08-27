@@ -5,6 +5,8 @@ from flask_cors import CORS, cross_origin
 from .image_converter import binarize, resize, validate_image
 import glob
 import time
+from PIL import Image
+import numpy as np
 from flask_bootstrap import Bootstrap 
 
 
@@ -26,10 +28,11 @@ def create_app():
             resize(f'uploads/{f}')
             binarize(f'uploads/{f}')
         if not request.args.get('gameboard'):
-            gameboard = '/uploads/bird.jpg'
+            gameimg = 'uploads/bird.jpg'
         else:
-            gameboard = request.args.get('gameboard')
-        return render_template('index.html', files=files, board=gameboard)
+            gameimg = request.args.get('gameboard')[1:]
+        gamegrid = np.array(Image.open(gameimg)).tolist()
+        return render_template('index.html', files=files, gameimg=gameimg, gamegrid=gamegrid)
 
     # This route handles image uploads and upload checking (w/ Submit button)
     @app.route('/', methods=['POST'])
