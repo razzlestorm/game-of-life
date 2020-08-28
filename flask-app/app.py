@@ -1,5 +1,4 @@
 import os
-import config
 from flask import Flask, render_template, request, redirect, url_for, abort, session, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
@@ -20,7 +19,7 @@ def create_app():
     app = Flask(__name__)
     bootstrap = Bootstrap(app)
     cors = CORS(app)
-    app.config['SECRET_KEY'] = config.secret
+    app.config['SECRET_KEY'] = os.environ['FLASK_SECRET']
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
     app.config['UPLOADS_DEFAULT_DEST'] = 'flask-app/static/img/uploads'
     photos = UploadSet('photos', IMAGES)
