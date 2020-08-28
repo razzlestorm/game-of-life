@@ -100,12 +100,13 @@ def play_step(world):
                 stepped_world[y][x] = 0
     return stepped_world
 
+def update(event):
+    world = play_step(world)
+    draw(world)
+    document <= canvas
+    return world
 
-sworld = play_step(world)
-draw(sworld)
-
-document <= canvas
-
+document['next_button'].bind("click", update)
 
 '''def update(i):
     global world

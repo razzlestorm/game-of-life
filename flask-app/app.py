@@ -21,7 +21,7 @@ def create_app():
     cors = CORS(app)
     app.config['SECRET_KEY'] = os.environ['FLASK_SECRET']
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-    app.config['UPLOADS_DEFAULT_DEST'] = 'flask-app/static/img/uploads'
+    app.config['UPLOADS_DEFAULT_DEST'] = 'static/img/uploads'
     photos = UploadSet('photos', IMAGES)
     configure_uploads(app, photos)
 
