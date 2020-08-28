@@ -9,8 +9,7 @@ import time
 from PIL import Image
 import numpy as np
 from flask_bootstrap import Bootstrap 
-
-
+import re
 
 
 def create_app():
@@ -24,29 +23,28 @@ def create_app():
     app.config['UPLOADS_DEFAULT_DEST'] = 'flask-app/static/img/uploads'
     photos = UploadSet('photos', IMAGES)
     configure_uploads(app, photos)
+    img_path = '/static/img/uploads/photos/'
 
 
     # Main route
     @app.route('/', methods=['GET'])
     def index():
-        files = os.listdir(f"{app.config['UPLOADS_DEFAULT_DEST']}/photos")
-        images = []
-        for f in files:
-            resize(photos.path(f))
-            binarize(photos.path(f))
-            images.append(photos.url(f).replace('flask-app/', ''))
+        images = os.listdir(f"{app.config['UPLOADS_DEFAULT_DEST']}/photos")
+        for img in images:
+            resize(photos.path(img))
+            binarize(photos.path(img))
         print(f"request.args.get(gameboard) = {request.args.get('gameboard')}")
         print(f"photos path = {photos.path('board1.jpg')}")
         if not request.args.get('gameboard'):
             gameimg = 'bird.jpg'
+            gamegrid = np.array(Image.open(photos.path(gameimg))).tolist()
         else:
             gameimg = request.args.get('gameboard')
+            gamegrid = np.array(Image.open(photos.path(gameimg))).tolist()
         print(f"gameimg = {gameimg}")
         print(f"path = {photos.path(gameimg)} url = {photos.url(gameimg)}")
-        gameimg_path = photos.path(gameimg)
-        gamegrid = np.array(Image.open(gameimg_path)).tolist()
         print(gamegrid[:10])
-        return render_template('index.html', images=images, gameimg=photos.url(gameimg), gamegrid=gamegrid)
+        return render_template('index.html', images=images, gameimg=photos.path(gameimg)[9:], gamegrid=gamegrid, img_path=img_path)
 
     @app.route('/', methods=['POST'])
     def upload_files():
@@ -60,19 +58,19 @@ def create_app():
         session['file_names'] = file_names
         return redirect(url_for('index'))
 
-
     # This route gets the request for the user's game board from the "Play..." button
     @app.route("/game" , methods=['GET', 'POST'])
     def game():
-        select = request.form.get('filedrop').replace("https://pic-game-of-life.herokuapp.com/_uploads/photos/", "")
+        select = request.form.get('filedrop')
         print(f"selected = {select}")
+        select = select[len(img_path):]
         return redirect(url_for('index', gameboard=select))
 
     
     @app.route('/delete_uploads')
     def delete():
         for fil in glob.glob('./flask-app/static/img/uploads/*'):
-            if fil != './flask-app//static/img/uploads/bird.jpg':
+            if fil != './flask-app/static/img/uploads/bird.jpg':
                 os.remove(fil)
         return "Images deleted!"
     

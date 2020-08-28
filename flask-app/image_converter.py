@@ -6,7 +6,7 @@ def resize(input_path):
     if img.size[0] >= 50:
         img = img.resize((50, 50)) 
     else:
-        img = img.resize((round(img.size[0], -1), round(img.size[1], -1)))
+        img = img.resize((50, 50))
     img.save(input_path, img.format)
 
 def binarize(input_path):

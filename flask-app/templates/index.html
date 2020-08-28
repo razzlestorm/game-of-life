@@ -18,7 +18,7 @@
     <form method="POST" action="{{ url_for('game') }}">
       <select id="filedrop" name="filedrop" method="GET" action="/">
         {% for image in images %}
-        <option value='{{ image }}'>{{image|replace("https://pic-game-of-life.herokuapp.com/_uploads/photos/", "")}}</option>
+        <option value="{{ img_path }}{{ image }}">{{ image }}</option>
         {% endfor %}
       </select>
       <button type="submit">Play with this board!</button>
@@ -56,6 +56,8 @@ canvas = html.CANVAS(width=img.naturalWidth, height=img.naturalHeight)
 canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"}
 ctx = canvas.getContext('2d')
 ctx.imageSmoothingEnabled = False
+ctx.drawImage(img, 0, 0)
+global world
 world = {{ gamegrid }}
 
 
@@ -100,21 +102,16 @@ def play_step(world):
                 stepped_world[y][x] = 0
     return stepped_world
 
-def update(event):
-    world = play_step(world)
-    draw(world)
-    document <= canvas
-    return world
 
-document['next_button'].bind("click", update)
+document <= canvas
 
-'''def update(i):
+def update(i):
     global world
     stepped_world = play_step(world)
     draw(stepped_world)
+    document <= canvas
 
-
-document <= canvas'''
+document['next_button'].bind("click", update)
 
 '''
 boardImage = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight)
