@@ -18,7 +18,7 @@
     <form method="POST" action="{{ url_for('game') }}">
       <select id="filedrop" name="filedrop" method="GET" action="/">
         {% for image in images %}
-        <option value='{{ image }}'>{{image|replace("pic-game-of-life.herokuapp.com/_uploads/photos/", "")}}</option>
+        <option value='{{ image }}'>{{image|replace("https://pic-game-of-life.herokuapp.com/_uploads/photos/", "")}}</option>
         {% endfor %}
       </select>
       <button type="submit">Play with this board!</button>

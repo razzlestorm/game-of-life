@@ -48,19 +48,6 @@ def create_app():
         print(gamegrid[:10])
         return render_template('index.html', images=images, gameimg=photos.url(gameimg), gamegrid=gamegrid)
 
-        # TO DO FINISH THIS ############################################
-        '''files = os.listdir(app.config['UPLOAD_PATH'])
-        for f in files:
-            resize(f'./flask-app/uploads/{f}')
-            binarize(f'./flask-app/uploads/{f}')
-        if not request.args.get('gameboard'):
-            gameimg = './flask-app/uploads/bird.jpg'
-        else:
-            gameimg = f".{request.args.get('gameboard')}"
-        gamegrid = np.array(Image.open(gameimg)).tolist()
-        print(gameimg[11:])
-        return render_template('index.html', files=files, gameimg=gameimg, gamegrid=gamegrid)'''
-
     @app.route('/', methods=['POST'])
     def upload_files():
         if "file_names" not in session:
@@ -74,27 +61,10 @@ def create_app():
         return redirect(url_for('index'))
 
 
-    '''    # This route handles image uploads and upload checking (w/ Submit button)
-    @app.route('/', methods=['POST'])
-    def upload_files():
-        uploaded_file = request.files['file']
-        filename = secure_filename(uploaded_file.filename)
-        if filename != '':
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
-                    file_ext != validate_image(uploaded_file.stream):
-                print('Please try a different image!')
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-            time.sleep(1)
-        return redirect(url_for('index'))'''
-    
-
-
     # This route gets the request for the user's game board from the "Play..." button
     @app.route("/game" , methods=['GET', 'POST'])
     def game():
-        select = request.form.get('filedrop').replace("pic-game-of-life.herokuapp.com/_uploads/photos/", "")
+        select = request.form.get('filedrop').replace("https://pic-game-of-life.herokuapp.com/_uploads/photos/", "")
         print(f"selected = {select}")
         return redirect(url_for('index', gameboard=select))
 
