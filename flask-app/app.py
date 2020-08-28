@@ -69,8 +69,9 @@ def create_app():
     
     @app.route('/delete_uploads')
     def delete():
-        for fil in glob.glob('./flask-app/static/img/uploads/*'):
-            if fil != './flask-app/static/img/uploads/bird.jpg':
+        for fil in glob.glob(f"{app.config['UPLOADS_DEFAULT_DEST']}/photos/*"):
+            if 'bird.jpg' not in fil:
+                print(fil)
                 os.remove(fil)
         return "Images deleted!"
     
