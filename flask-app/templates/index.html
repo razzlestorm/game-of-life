@@ -9,36 +9,36 @@
   </head>
   <body onload="brython(1)">
     <h1>File Upload</h1>
-    <form method="POST" action="" enctype="multipart/form-data">
-      <p><input type="file" name="file"></p>
+    <form method="POST" action="{{ url_for('upload_files') }}" enctype="multipart/form-data">
+      <p><input type="file" name="photo"></p>
       <p><input type="submit" value="Submit"></p>
     </form>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <!-- This dropdown is populated with all uploaded files -->
     <form method="POST" action="{{ url_for('game') }}">
       <select id="filedrop" name="filedrop" method="GET" action="/">
-        {% for file in files %}
-        <option value= {{url_for('upload', filename=file) }}>{{file}}</option>
+        {% for image in images %}
+        <option value='{{ image }}'>{{image|replace("pic-game-of-life.herokuapp.com/_uploads/photos/", "")}}</option>
         {% endfor %}
       </select>
       <button type="submit">Play with this board!</button>
     </form>
     <div id="image">
-      <img id="selectedImage" style="width: 128px">
+      <img id="selectedImage" src='{{ gameimg }}' style="width: 128px">
     </div>
     <hr>
     <div id ='gboard_div'>
-      <img id='gboard' src={{ gameimg[9:] }} style="display:none">
+      <img id='gboard' src='{{ gameimg }}' style="display:none">
       <button id="next_button">Next</button>
     </div>
     <!-- This changes the image src based on the value of the dropdown -->
     <script>    
       $( document ).ready(function() {
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value.substring(9);
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
       });
       $( "select" ) .change(function () {
-      console.log(document.getElementById("filedrop").value);    
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value.substring(9);  
+      console.log(document.getElementById("filedrop").value);
+      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
       });  
     </script>
 
