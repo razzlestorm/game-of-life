@@ -7,7 +7,7 @@ def resize(input_path):
         img = img.resize((50, 50)) 
     else:
         img = img.resize((50, 50))
-    img.save(input_path, img.format)
+    img.convert('RGB').save(input_path, 'JPEG')
 
 def binarize(input_path):
     img = Image.open(input_path)
