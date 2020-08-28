@@ -21,7 +21,7 @@ def create_app():
     cors = CORS(app)
     app.config['SECRET_KEY'] = os.environ['FLASK_SECRET']
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-    app.config['UPLOADS_DEFAULT_DEST'] = 'static/img/uploads'
+    app.config['UPLOADS_DEFAULT_DEST'] = 'flask-app/static/img/uploads'
     photos = UploadSet('photos', IMAGES)
     configure_uploads(app, photos)
 
@@ -34,7 +34,7 @@ def create_app():
         for f in files:
             resize(photos.path(f))
             binarize(photos.path(f))
-            images.append(photos.url(f))
+            images.append(photos.url(f).replace('flask-app/', ''))
         print(f"request.args.get(gameboard) = {request.args.get('gameboard')}")
         print(f"photos path = {photos.path('board1.jpg')}")
         if not request.args.get('gameboard'):
@@ -71,8 +71,8 @@ def create_app():
     
     @app.route('/delete_uploads')
     def delete():
-        for fil in glob.glob('./flask-app/uploads/*'):
-            if fil != './flask-app/uploads\\bird.jpg':
+        for fil in glob.glob('./flask-app/static/img/uploads/*'):
+            if fil != './flask-app//static/img/uploads/bird.jpg':
                 os.remove(fil)
         return "Images deleted!"
     
