@@ -43,7 +43,7 @@ def create_app():
             gamegrid = np.array(Image.open(photos.path(gameimg))).tolist()
         print(f"gameimg = {gameimg}")
         print(f"path = {photos.path(gameimg)} url = {photos.url(gameimg)}")
-        print(gamegrid[:10])
+        print(f'length = {len(gamegrid)}')
         return render_template('index.html', images=images, gameimg=photos.path(gameimg)[9:], gamegrid=gamegrid, img_path=img_path)
 
     @app.route('/', methods=['POST'])

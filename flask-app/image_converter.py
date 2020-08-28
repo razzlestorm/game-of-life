@@ -3,7 +3,7 @@ import imghdr
 
 def resize(input_path):
     img = Image.open(input_path)
-    if img.size[0] > 100:
+    if img.size[0] >= 100:
         img = img.resize((100, 100)) 
     else:
         img = img.resize((50, 50))

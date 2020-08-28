@@ -107,11 +107,12 @@ document <= canvas
 
 def update(i):
     global world
-    stepped_world = play_step(world)
+    stepped_world = play_step({{ gamegrid }})
     draw(stepped_world)
     document <= canvas
 
 document['next_button'].bind("click", update)
+
 
 </script>
 
