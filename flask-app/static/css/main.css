@@ -29,3 +29,10 @@
     border:1px solid blue;
     padding:10px;
 }
+
+ul {
+    list-style-type: square;
+}
+.pdiv{
+    max-width: 50%;
+}
