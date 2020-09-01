@@ -7,19 +7,19 @@
     <title>Game of Life!</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
-  <div class='pdiv'>
-  <p><h3>The universe of the Game of Life</h3> is an infinite, two-dimensional orthogonal grid of square cells, each of which is in one of two possible states, live or dead, (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:</p>
+  <div class='rules'>
+  <p><h3>The Universe of the Game of Life</h3> is an infinite, two-dimensional orthogonal grid of square cells, each of which is in one of two possible states, live or dead, (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:</p>
 <ul>
-    <li>Any live cell with fewer than two live neighbours dies, as if by underpopulation.</li>
-    <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
-    <li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
-    <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+    <li>Any live cell with fewer than two live neighbors dies, as if by underpopulation.</li>
+    <li>Any live cell with two or three live neighbors lives on to the next generation.</li>
+    <li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
+    <li>Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.</li>
 </ul>
 
 <p>These rules, which compare the behavior of the automaton to real life, can be condensed into the following:</p>
 
     <ul>
-      <li>Any live cell with two or three live neighbours survives.</li>
+      <li>Any live cell with two or three live neighbors survives.</li>
     <li>Any dead cell with three live neighbours becomes a live cell.</li>
     <li>All other live cells die in the next generation. Similarly, all other dead cells stay dead.</li>
   </ul>
@@ -30,23 +30,27 @@
 </div>
 <hr>
   <body onload="brython(1)">
-    <h1>File Upload</h1>
-    <form method="POST" action="{{ url_for('upload_files') }}" enctype="multipart/form-data">
-      <p><input type="file" name="photo"></p>
-      <p><input type="submit" value="Submit"></p>
-    </form>
+    <div id='upload-div'>
+      <h1>File Upload</h1>
+        <form method="POST" action="{{ url_for('upload_files') }}" enctype="multipart/form-data">
+          <p><input type="file" name="photo"></p>
+          <p><input type="submit" value="Submit"></p>
+        </form>
+    </div>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <!-- This dropdown is populated with all uploaded files -->
-    <form method="POST" action="{{ url_for('game') }}">
-      <select id="filedrop" name="filedrop" method="GET" action="/">
-        {% for image in images %}
-        <option value="{{ img_path }}{{ image }}">{{ image }}</option>
-        {% endfor %}
-      </select>
-      <button type="submit">Play with this board!</button>
-    </form>
-    <div id="image">
-      <img id="selectedImage" src='{{ gameimg }}' style="width: 128px">
+      <!-- This dropdown is populated with all uploaded files -->
+      <div id='gameboard-choice'>
+      <form method="POST" action="{{ url_for('game') }}">
+        <select id="filedrop" name="filedrop" method="GET" action="/">
+          {% for image in images %}
+          <option value="{{ img_path }}{{ image }}">{{ image }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Play with this board!</button>
+      </form>
+      <div id="image">
+        <img id="selectedImage" src='{{ gameimg }}' style="width: 128px">
+      </div>
     </div>
     <hr>
     <div id ='gboard_div'>
@@ -63,6 +67,7 @@
       document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
       });  
     </script>
+    <button id='gen-button' disabled></button>
 
 <script type="text/python">
 from browser import bind, document, html
@@ -74,14 +79,19 @@ img = document['gboard']
 img.attrs['naturalWidth'] = int(img.naturalWidth)
 img.attrs['naturalHeight'] = int(img.naturalHeight)
 canvas = html.CANVAS(width=img.naturalWidth, height=img.naturalHeight)
+canvas.id = 'game-canvas'
 canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"}
 ctx = canvas.getContext('2d')
 ctx.imageSmoothingEnabled = False
 ctx.drawImage(img, 0, 0)
 global world
 world = {{ gamegrid }}
+global generation
+generation = 0
+gen_button = document['gen-button']
+gen_button.innerHTML = f'Generation: {generation}'
 
-
+# Iterates over array and renders to canvas
 def draw(arr):
     for y in range(len(arr)):
         for x in range(len(arr[y])):
@@ -92,7 +102,8 @@ def draw(arr):
             ctx.fillRect(x, y, 1, 1)
     return ctx
 
-def play_step(world):
+# Main logic to play the game (plays a single step)
+def play_step(world, gen):
     stepped_world = world.copy()
     for y in range(len(world)):
         for x in range(len(world[y])):
@@ -107,7 +118,7 @@ def play_step(world):
                 
                     y_cell = y+yy
                     x_cell = x+xx
-                
+                    # Checking neighbors are all valid (and not beyond the bounds of the edges)
                     if (y_cell >= 0 and x_cell >= 0) and (y_cell < len(world) and x_cell < len(world[y])):
                         neighbor = world[y + yy][x+ xx]
                         if neighbor < 127:
@@ -121,17 +132,19 @@ def play_step(world):
             # If cell is dead
             elif cell > 127 and neighbor_count == 3:
                 stepped_world[y][x] = 0
-    return stepped_world
-
+    return stepped_world, gen
 
 document <= canvas
 #document <= "width: " + str(img.naturalWidth) + html.BR() + " height: " + str(img.naturalHeight)
 
 def update(i):
-    global world
-    stepped_world = play_step({{ gamegrid }})
+    global generation
+    stepped_world, generation = play_step({{ gamegrid }}, generation)
     draw(stepped_world)
+    generation += 1
     document <= canvas
+    gen_button.innerHTML = f'Generation: {generation}'
+
 
 document['next_button'].bind("click", update)
 

@@ -8,7 +8,6 @@ import glob
 import time
 from PIL import Image
 import numpy as np
-from flask_bootstrap import Bootstrap 
 import re
 
 
@@ -16,7 +15,6 @@ def create_app():
     """Create and configure an instance of the Flask application"""
     basedir = os.path.abspath(os.path.dirname(__file__))
     app = Flask(__name__)
-    bootstrap = Bootstrap(app)
     cors = CORS(app)
     app.config['SECRET_KEY'] = os.environ['FLASK_SECRET']
     app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
@@ -33,17 +31,14 @@ def create_app():
         for img in images:
             resize(photos.path(img))
             binarize(photos.path(img))
-        print(f"request.args.get(gameboard) = {request.args.get('gameboard')}")
-        print(f"photos path = {photos.path('board1.jpg')}")
+        # Default board if no board is requested
         if not request.args.get('gameboard'):
             gameimg = 'bird.jpg'
             gamegrid = np.array(Image.open(photos.path(gameimg))).tolist()
         else:
             gameimg = request.args.get('gameboard')
             gamegrid = np.array(Image.open(photos.path(gameimg))).tolist()
-        print(f"gameimg = {gameimg}")
-        print(f"path = {photos.path(gameimg)} url = {photos.url(gameimg)}")
-        print(f'length = {len(gamegrid)}')
+        # Need the gameimg to be after the first 10 characters due to photos.path issues.
         return render_template('index.html', images=images, gameimg=photos.path(gameimg)[9:], gamegrid=gamegrid, img_path=img_path)
 
     @app.route('/', methods=['POST'])
