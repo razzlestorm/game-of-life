@@ -51,23 +51,26 @@
       <div id="image">
         <img id="selectedImage" src='{{ gameimg }}' style="width: 128px">
       </div>
+          <!-- This changes the image src based on the value of the dropdown -->
+        <script>    
+          $( document ).ready(function() {
+          document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
+          });
+          $( "select" ) .change(function () {
+          document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
+          });  
+        </script>
     </div>
     <hr>
     <div id ='gboard_div'>
       <img id='gboard' src='{{ gameimg }}' style="display:none">
+      <button id="anim_button">Start</button>
       <button id="next_button">Next</button>
+      <button id="stop_anim_button">Stop</button>
+      <button id='gen-button' disabled></button>
     </div>
-    <!-- This changes the image src based on the value of the dropdown -->
-    <script>    
-      $( document ).ready(function() {
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;
-      });
-      $( "select" ) .change(function () {
-      console.log(document.getElementById("filedrop").value);
-      document.getElementById("selectedImage").src=document.getElementById("filedrop").value;  
-      });  
-    </script>
-    <button id='gen-button' disabled></button>
+
+    
 
 <script type="text/python">
 from browser import bind, document, html
@@ -132,7 +135,7 @@ def play_step(world, gen):
             # If cell is dead
             elif cell > 127 and neighbor_count == 3:
                 stepped_world[y][x] = 0
-    return stepped_world, gen
+    return stepped_world, gen+1
 
 document <= canvas
 #document <= "width: " + str(img.naturalWidth) + html.BR() + " height: " + str(img.naturalHeight)
@@ -141,13 +144,25 @@ def update(i):
     global generation
     stepped_world, generation = play_step({{ gamegrid }}, generation)
     draw(stepped_world)
-    generation += 1
     document <= canvas
     gen_button.innerHTML = f'Generation: {generation}'
 
+def animate(i):
+    global animation
+    global generation
+    animation = raf(animate)
+    stepped_world, generation = play_step({{ gamegrid }}, generation)
+    draw(stepped_world)
+    gen_button.innerHTML = f'Generation: {generation}'
+
+def stop(i):
+    global animation
+    caf(animation)
+
 
 document['next_button'].bind("click", update)
-
+document['anim_button'].bind("click", animate)
+document['stop_anim_button'].bind("click", stop)
 
 </script>
 
