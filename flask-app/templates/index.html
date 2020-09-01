@@ -93,6 +93,7 @@ global generation
 generation = 0
 gen_button = document['gen-button']
 gen_button.innerHTML = f'Generation: {generation}'
+document <= canvas
 
 # Iterates over array and renders to canvas
 def draw(arr):
@@ -107,11 +108,11 @@ def draw(arr):
 
 # Main logic to play the game (plays a single step)
 def play_step(world, gen):
-    stepped_world = world.copy()
+    stepped_world = list(world)
     for y in range(len(world)):
         for x in range(len(world[y])):
         
-            cell = world[y][x]
+            cell = stepped_world[y][x]
             neighbor_count = 0
             # Getting neighbors
             for yy in range(-1, 2):
@@ -121,12 +122,14 @@ def play_step(world, gen):
                 
                     y_cell = y+yy
                     x_cell = x+xx
+
                     # Checking neighbors are all valid (and not beyond the bounds of the edges)
                     if (y_cell >= 0 and x_cell >= 0) and (y_cell < len(world) and x_cell < len(world[y])):
-                        neighbor = world[y + yy][x+ xx]
+                        neighbor = world[y + yy][x + xx]
+                        # check if neighbor is alive
                         if neighbor < 127:
                             neighbor_count += 1
-
+                            
             # cell is alive 
             if cell < 127 and neighbor_count < 2:
                 stepped_world[y][x] = 255
@@ -137,8 +140,6 @@ def play_step(world, gen):
                 stepped_world[y][x] = 0
     return stepped_world, gen+1
 
-document <= canvas
-#document <= "width: " + str(img.naturalWidth) + html.BR() + " height: " + str(img.naturalHeight)
 
 def update(i):
     global generation
