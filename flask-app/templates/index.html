@@ -76,6 +76,7 @@
 from browser import bind, document, html
 from browser.timer import request_animation_frame as raf
 from browser.timer import cancel_animation_frame as caf
+import copy
 
 
 img = document['gboard']
@@ -87,13 +88,14 @@ canvas.style = {"margin-left": "auto", "margin-right": "auto", "width": "50%"}
 ctx = canvas.getContext('2d')
 ctx.imageSmoothingEnabled = False
 ctx.drawImage(img, 0, 0)
-global world
-world = {{ gamegrid }}
+
 global generation
 generation = 0
 gen_button = document['gen-button']
 gen_button.innerHTML = f'Generation: {generation}'
 document <= canvas
+
+
 
 # Iterates over array and renders to canvas
 def draw(arr):
@@ -108,13 +110,13 @@ def draw(arr):
 
 # Main logic to play the game (plays a single step)
 def play_step(world, gen):
-    stepped_world = list(world)
+    stepped_world = list(copy.deepcopy(world))
     for y in range(len(world)):
         for x in range(len(world[y])):
         
             cell = world[y][x]
             neighbor_count = 0
-            # Getting neighbors
+            # Getting neighbors (3x3 grid skipping center)
             for yy in range(-1, 2):
                 for xx in range(-1, 2):
                     if yy == 0 and xx == 0:
@@ -140,10 +142,14 @@ def play_step(world, gen):
                 stepped_world[y][x] = 0
     return stepped_world, gen+1
 
+global stepped_world
+stepped_world = copy.deepcopy({{ gamegrid }})
+
 
 def update(i):
     global generation
-    stepped_world, generation = play_step({{ gamegrid }}, generation)
+    global stepped_world
+    stepped_world, generation = play_step(stepped_world, generation)
     draw(stepped_world)
     document <= canvas
     gen_button.innerHTML = f'Generation: {generation}'
@@ -151,8 +157,9 @@ def update(i):
 def animate(i):
     global animation
     global generation
+    global stepped_world
     animation = raf(animate)
-    stepped_world, generation = play_step({{ gamegrid }}, generation)
+    stepped_world, generation = play_step(stepped_world, generation)
     draw(stepped_world)
     gen_button.innerHTML = f'Generation: {generation}'
 
