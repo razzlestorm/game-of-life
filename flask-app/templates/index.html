@@ -110,7 +110,7 @@ def draw(arr):
 
 # Main logic to play the game (plays a single step)
 def play_step(world, gen):
-    stepped_world = list(copy.deepcopy(world))
+    stepped_world = copy.deepcopy(world)
     for y in range(len(world)):
         for x in range(len(world[y])):
         
@@ -143,7 +143,7 @@ def play_step(world, gen):
     return stepped_world, gen+1
 
 global stepped_world
-stepped_world = copy.deepcopy({{ gamegrid }})
+stepped_world = {{ gamegrid }}
 
 
 def update(i):
